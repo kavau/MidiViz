@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- TODO: all strings should be defined in values/strings.xml -->
+
+    <PreferenceCategory
+        android:title="Meter"
+        android:key="pref_key_meter_settings">
+
+        <org.voelkerweb.midiviz.NumberPickerPreference
+            android:key="pref_beats_per_measure"
+            android:title="Beats"
+            android:summary="Beats per measure"
+            android:defaultValue="4" />
+
+        <org.voelkerweb.midiviz.NumberPickerPreference
+            android:key="pref_beats_per_minute"
+            android:title="Tempo"
+            android:summary="Beats per minute"
+            android:defaultValue="120" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Metronome"
+        android:key="pref_key_metronome_settings">
+
+        <CheckBoxPreference
+            android:key="pref_metronome_on"
+            android:title="Metronome"
+            android:summary="Turn metronome on/off"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:key="pref_metronome_bell"
+            android:title="Bell"
+            android:summary="Sound bell at start of measure"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Debugging"
+        android:key="pref_key_debugging">
+
+        <CheckBoxPreference
+            android:key="pref_fake_midi"
+            android:title="Fake Midi Source"
+            android:summary="Produce fake Midi data for testing"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

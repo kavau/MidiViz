@@ -92,11 +92,12 @@ public class Metronome
         // We always play the toc sound and, if bell==true, the bell sound on top. This leads to a
         // more consistent perception.
         // TODO: play tocSound at a lower volume if superimposed with bell?
-        soundPool.play(tocSound, mParameters.metronomeVolume(),
-                       mParameters.metronomeVolume(), 1, 0, 1.0f);
+        // TODO: volume settings
+        final float tocVolume = 1.0f * mParameters.metronomeVolume();
+        final float bellVolume = 0.5f * mParameters.metronomeVolume();
+        soundPool.play(tocSound, tocVolume, tocVolume, 1, 0, 1.0f);
         if (mParameters.metronomeBell() && bell) {
-            soundPool.play(bellSound, mParameters.metronomeVolume(),
-                           mParameters.metronomeVolume(), 1, 0, 1.0f);
+            soundPool.play(bellSound, bellVolume, bellVolume, 1, 0, 1.0f);
         }
     }
 }

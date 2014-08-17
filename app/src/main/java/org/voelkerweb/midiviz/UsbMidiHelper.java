@@ -209,9 +209,7 @@ public class UsbMidiHelper implements MidiInterface
                 // The timeout is unnecessary since bulkTransfer returns when we release the
                 // interface.
                 final int TIMEOUT = 60000;  // Arbitrary timeout of 1 min.
-                Log.d(TAG, "starting new bulkTransfer");
                 int nBytes = mDeviceConnection.bulkTransfer(mEndpoint, buf, buf.length, TIMEOUT);
-                Log.d(TAG, "bulkTransfer: " + nBytes + " bytes received.");
                 if (nBytes < 0) {
                     Log.e(TAG, "bulkTransfer error: " + nBytes);
                 }
@@ -227,7 +225,6 @@ public class UsbMidiHelper implements MidiInterface
                         payloadBytes = 2;
                     }
                     if (payloadBytes > 0) {
-                        Log.d(TAG, "received midi: " + codeIndexNumber);
                         MidiMessage midi = new MidiMessage();
                         midi.timestamp = System.currentTimeMillis();
                         // TODO: this is strange. First byte seems redundant. Figure this out.

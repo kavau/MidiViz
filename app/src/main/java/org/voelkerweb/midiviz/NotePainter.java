@@ -55,6 +55,14 @@ public class NotePainter
     }
 
     // Computes the y coordinate for the given note level.
+    // Experimental: use a nonlinear scale.
+    //
+    // PP:
+    // P:
+    // MP:
+    // MF:
+    // F:
+    // FF:
     private float getY(float level, Area area)
     {
         return area.y1 + (area.y0 - area.y1) * level;
