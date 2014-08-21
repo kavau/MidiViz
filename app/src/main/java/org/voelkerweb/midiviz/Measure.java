@@ -87,6 +87,54 @@ public class Measure
         return times;
     }
 
+    // Converts the Midi "velocity" (byte between 0 and 127, I think) to a float level between 0
+    // and 1.
+    //
+    // Experimental: use a nonlinear scale.
+    private static class VelocityLevelPair {
+        public VelocityLevelPair(int v, float l) { velocity = v; level = l; }
+        public int velocity;
+        public float level;
+    }
+
+    private static ArrayList<VelocityLevelPair> velocityToLevel =
+            new ArrayList<VelocityLevelPair>() {{
+                add(new VelocityLevelPair(10, 0.0f));          // MIN
+                add(new VelocityLevelPair(20, 1.0f / 7.0f));   // PP
+                add(new VelocityLevelPair(30, 2.0f / 7.0f));   // P
+                add(new VelocityLevelPair(40, 3.0f / 7.0f));   // MP
+                add(new VelocityLevelPair(55, 4.0f / 7.0f));   // MF
+                add(new VelocityLevelPair(70, 5.0f / 7.0f));   // F
+                add(new VelocityLevelPair(90, 6.0f / 7.0f));   // FF
+                add(new VelocityLevelPair(127, 7.0f / 7.0f));  // MAX
+            }};
+
+    private static float velocityToLevel(int velocity, Parameters parameters) {
+        Log.d(TAG, "VELOCITY: " + velocity);
+        // Traditional:
+        //return Util.safeDiv(velocity, parameters.maxLevel());
+
+        // First convert the velocity to a level between 0 and 7.
+        // TODO: we're ignoring Parameters.maxLevel() for now.
+        VelocityLevelPair last = null;
+        for (VelocityLevelPair current : velocityToLevel) {
+            if (velocity <= current.velocity) {
+                if (last == null) {
+                    Log.e(TAG, "Velocity is too small: " + velocity);
+                    return 0.0f;
+                } else {
+                    return last.level +
+                            Util.safeDiv(velocity - last.velocity, current.velocity - last.velocity)
+                                    * (current.level - last.level);
+                }
+            }
+            last = current;
+        }
+        // We only get here if the velocity is greater than the (assumed) max velocity of 127.
+        Log.e(TAG, "Velocity too big: " + velocity);
+        return 1.0f;
+    }
+
     // Updates the notes according to the given Midi message, either adding a new note or releasing
     // a currently held note.
     public void updateFromMessage(MidiMessage message, Parameters parameters)
@@ -99,11 +147,13 @@ public class Measure
                     return;
                 }
                 int key = Util.byteToUnsignedInt(message.data[1]);
-                int level = Util.byteToUnsignedInt(message.data[2]);
+                int velocity = Util.byteToUnsignedInt(message.data[2]);
                 if (cmd == 0x80) {
                     releaseNote(key, message.timestamp);
                 } else {  // cmd == 0x90
-                    startNote(key, Util.safeDiv(level, parameters.maxLevel()), message.timestamp);
+                    float level = velocityToLevel(velocity, parameters);
+                    Log.d(TAG, "Velocity " + velocity + " -> Level " + (7 * level));
+                    startNote(key, level, message.timestamp);
                 }
             } else {
                 Log.e(TAG, "Unknown Midi command " + cmd);

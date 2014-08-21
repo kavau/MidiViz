@@ -42,7 +42,8 @@ public class Parameters
 
     public float rowSpacing() { return 60.0f; }
 
-    public float levelMarkerInterval() { return 0.25f; }
+    // The levels are: MIN, PP, P, MP, MF, F, FF, MAX
+    public float levelMarkerInterval() { return 1.0f / 7.0f; }
 
     public long updateIntervalMillis() { return 20;  /* 20 msec ~ 50 Hz */ }
 

@@ -55,14 +55,6 @@ public class NotePainter
     }
 
     // Computes the y coordinate for the given note level.
-    // Experimental: use a nonlinear scale.
-    //
-    // PP:
-    // P:
-    // MP:
-    // MF:
-    // F:
-    // FF:
     private float getY(float level, Area area)
     {
         return area.y1 + (area.y0 - area.y1) * level;
@@ -135,7 +127,11 @@ public class NotePainter
             // It seems that rectangles *have* to be drawn up-left to down-right!
             canvas.drawRect(x0, y1, x1, y0, areaPaint);
 
-            canvas.drawLine(x0, y0, x0, y1, linePaint);
+            // Draw a little line at the beginning of the note so we can more easily see at exactly
+            // what time the note was played.
+            // TODO: control this via settings.
+            float blipSize = 0.05f * (area.y0 - area.y1);
+            canvas.drawLine(x0, y0 - blipSize, x0, y1, linePaint);
             canvas.drawLine(x0, y1, x1, y1, linePaint);
 
             // Draw time marker for held notes.
